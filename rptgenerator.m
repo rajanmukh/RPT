@@ -1,7 +1,7 @@
 clear
 import mlreportgen.report.*
 import mlreportgen.dom.* 
-colDate=[11,8,2023];
+colDate=[19,9,2023];
 
 R=Report('MEOLUT Performance Statistics','docx');
 open(R)
@@ -25,7 +25,7 @@ cc(11,[1 2 12])={'Processing anomaly rate';'<0.0001';'5.11'};
 
 
 
-for ii=1
+for ii=1:9
     multp=1;    
     switch ii
         case 1
@@ -35,7 +35,7 @@ for ii=1
             refLoc=[13.0342,77.5125, 1e3];BRT=50;            
         case 2
             cname='UAE';
-            bID = '3ADE22223F81FE0';%uae
+            bID = '3ADEA2223F81FE0';%uae '3ADE22223F81FE0'
             refLoc=[24.431,54.448,5];BRT=50;
         case 3
             cname='Reunion-Cal-2';
@@ -66,6 +66,7 @@ for ii=1
             bID='9C7FEC2AACD3590';%always on  Kerguelen
             refLoc=[-49.3515,70.256,80];BRT=30;
     end
+    cname
     loc_est2
     if nodata
         cc(1,2+ii)={cname};

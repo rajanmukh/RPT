@@ -82,7 +82,7 @@ fclose(infile);
 %   column15: double (%f)
 %	column16: double (%f)
 % For more information, see the TEXTSCAN documentation.
-formatSpec = '%C%f%C%s%f%f%f%C%C%f%f%s%C%C%f%f%f%f%f%[^\n\r]';
+formatSpec = '%C%f%C%s%C%f%f%C%C%f%f%s%C%C%f%f%f%f%f%[^\n\r]';
 
 %% Open the text file.
 fileID = fopen(filename,'r');
@@ -154,17 +154,24 @@ for i=1:length(toa)
     %TOA(i)=mult*tt';
     TOA(i)=[3600 60 1 1e-3 1e-6 1e-9]*tt';
 end
-% i=1;
-% while(TOA(i+1)>TOA(i))
-%  i=i+1;   
-% end
+i=1;
+while(abs(TOA(i))>23*3600)
+ i=i+1;   
+end
+i=i-1;
+
+wiperange=1:i;
+% wiperange=1:7;
 % TOA(1:i+1)=[];
-% TOA(1:7)=[];
-% data(1:7) =[];
-% chn(1:7)=[];
-% satname(1:7) =[];
-% CNR(1:7) =[];
-% FOA(1:7) =[];
+TOA(wiperange)=[];
+toa(wiperange) =[];
+data(wiperange) =[];
+chn(wiperange)=[];
+satname(wiperange) =[];
+CNR(wiperange) =[];
+FOA(wiperange) =[];
+az(wiperange) =[];
+el(wiperange) =[];
 % TOA0=TOA(1)-1200;
 % TOA=TOA-d*24*3600;
 %%
@@ -201,11 +208,11 @@ end
 th1=TOA/3600;
 %%
 det=sum(tgroups~=0);
-disterror=zeros(1,length(det));
-lat=zeros(1,length(det));
-lon=zeros(1,length(det));
-h=zeros(1,length(det));
-k=1;
+% disterror=zeros(1,length(det));
+% lat=zeros(1,length(det));
+% lon=zeros(1,length(det));
+% h=zeros(1,length(det));
+% k=1;
 count=zeros(1,7);
 t_err=zeros(7,7,length(det));
 f_err=zeros(7,7,length(det));
@@ -233,7 +240,7 @@ ind=ind1 | ind2 | ind3;
 det7a=tgroups~=0;
 det7=det7a & ~ind;
 
-detrate_single = (sum(tgroups~=0,2)/size(tgroups,2))'
+detrate_single = (sum(tgroups~=0,2)/size(tgroups,2))';
 
 h1=figure;
 for i=1:7
@@ -289,7 +296,7 @@ xlim([TOA(1) TOA(end)]/3600)
 detrate_10min(i)=sum(h.Values>0)/h.NumBins;
 text(th1(end),0,strcat(num2str(100*detrate_10min(i),'%2.2f'),'%'));
 end
-detrate_10min
+detrate_10min;
 
 %%
 %group information(for Location estimation purpose)
@@ -384,7 +391,10 @@ ehe=zeros(1,length(det));
 k=1;
 tic
 for i=1:length(det)
-    noOfsimdet=det(i);
+    noOfsimdet=det(i);i
+    if i==15
+        hgh=0;
+    end
     switch noOfsimdet        
 %         case 2
 %             [lat(i),lon(i),h(i)]=tdoa1fdoa1(tgroups1(:,i),fgroups(:,1),satgroups(:,i));
@@ -402,7 +412,7 @@ for i=1:length(det)
             lat(i) = NaN;
     end
     if ~isnan(lat(i))
-        disterror(i) = distance(lat(i),lon(i),refLoc(1),refLoc(2),referenceEllipsoid('WGS84'))*1e-3;i
+        disterror(i) = distance(lat(i),lon(i),refLoc(1),refLoc(2),referenceEllipsoid('WGS84'))*1e-3;
     else
         disterror(i)=NaN;
     end
